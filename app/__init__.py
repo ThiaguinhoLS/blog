@@ -4,7 +4,7 @@ from flask import Flask
 app = Flask(__name__)
 
 from app import routes
-from blueprints import users
+from users import views
 
-app.register_blueprint(users.bp)
+app.register_blueprint(views.bp)
 
