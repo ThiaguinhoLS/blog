@@ -3,7 +3,8 @@ from flask import Flask
 
 app = Flask(__name__)
 
-from app import routes, auth
+from app import routes
+from blueprints import users
 
-app.register_blueprint(auth.bp)
+app.register_blueprint(users.bp)
 
