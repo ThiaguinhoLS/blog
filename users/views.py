@@ -6,13 +6,13 @@ from .forms import RegisterForm, LoginForm, RememberForm
 
 bp = Blueprint('users', 'users', template_folder='templates', url_prefix='/users')
 
-@bp.route('/register')
+@bp.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
     return render_template('register.html', title='Registro', form=form)
 
 
-@bp.route('/login')
+@bp.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     return render_template('login.html', title='Login', form=form)
@@ -23,7 +23,7 @@ def logout():
     pass
 
 
-@bp.route('/remember')
+@bp.route('/remember', methods=['GET', 'POST'])
 def remember():
     form = RememberForm()
     return render_template('remember.html', title='Esqueci a senha', form=form)
