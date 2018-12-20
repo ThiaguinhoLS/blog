@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask_wtf import FlaskForm
+from flask_wtf import FlaskForm, RecaptchaField
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo, Length
 
@@ -9,25 +9,29 @@ class RegisterForm(FlaskForm):
 	'Formulário de registro'
 
 	username = StringField(
-		'Username', validators=[DataRequired(), Length(min=4, max=20)]
+		'Usuário', validators=[DataRequired(), Length(min=4, max=20)]
 	)
 	password = PasswordField(
-		'Password', validators=[DataRequired(), Length(min=8, max=20)]
+		'Senha', validators=[DataRequired(), Length(min=8, max=20)]
 	)
 	confirm_password = PasswordField(
-		'Confirm password', validators=[DataRequired(), EqualTo('password')]
+		'Confirma senha', validators=[DataRequired(), EqualTo('password')]
 	)
 	email = StringField('Email', validators=[DataRequired(), Email()])
+	recaptcha = RecaptchaField()
+	submit = SubmitField('Registrar-se')
 
 
 class LoginForm(FlaskForm):
 
 	'Formulário de login'
 
-	username = StringField('Username', validators=[DataRequired()])
-	password = PasswordField('Password', validators=[DataRequired()])
+	username = StringField('Usuário', validators=[DataRequired()])
+	password = PasswordField('Senha', validators=[DataRequired()])
+	recaptcha = RecaptchaField()
+	submit = SubmitField('Entrar')
 
-	def validate_username(username):
+	def validate_username(self, username):
 		pass
 
 
@@ -35,4 +39,9 @@ class RememberForm(FlaskForm):
 
 	'Formulário de esqueceu a senha'
 
-	pass
+	email = StringField('Email', validators=[DataRequired(), Email()])
+	recaptcha = RecaptchaField()
+	submit = SubmitField('Enviar')
+
+	def validate_email(self, email):
+		pass

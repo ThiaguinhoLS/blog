@@ -6,8 +6,21 @@
   {% else %}
     <title>Blog Python</title>
   {% endif %}
+  <link rel="stylesheet" href="{{ url_for('static',
+  filename='css/bootstrap.min.css') }}">
 </head>
 <body>
+  <a href="{{ url_for('index') }}">Página inicial</a>
+  {% if not current_user.is_authenticated %}
+    <a href="{{ url_for('users.register') }}">Registrar-se</a>
+    <a href="{{ url_for('users.remember') }}">Esqueci a senha</a>
+    <a href="{{ url_for('users.login') }}">Entrar</a>
+  {% else %}
+    <a href="{{ url_for('users.dashboard', username=current_user.username) }}">Perfil</a>
+    <a href="{{ url_for('users.logout') }}">Sair</a>
+  {% endif %}
   {% block content %}{% endblock %}
+  <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}">
+  </script>
 </body>
 </html>

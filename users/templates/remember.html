@@ -1,5 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>Página de remember</h1>
+  <form action="" method="post">
+    {{ form.hidden_tag() }}
+    {{ form.email.label  }}
+    {{ form.email(size=32) }}
+    {% for error in form.email.errors %}
+      <span style="color: red">{{ error }}</span>
+    {% endfor %}
+    {{ form.recaptcha() }}
+    {{ form.submit() }}
+  </form>
 {% endblock %}

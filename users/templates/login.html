@@ -2,4 +2,19 @@
 
 {% block content %}
   <h1>Página de login</h1>
+  <form action="" method="post">
+    {{ form.hidden_tag() }}
+    {{ form.username.label }}
+    {{ form.username(size=32) }}<br>
+    {% for error in form.username.errors %}
+      <span style="color: red">{{ error }}</span>
+    {% endfor %}
+    {{ form.password.label  }}
+    {{ form.password(size=32) }}
+    {% for error in form.password.errors %}
+      <span style="color: red">{{ error }}</span>
+    {% endfor %}
+    {{ form.recaptcha() }}
+    {{ form.submit() }}
+  </form>
 {% endblock %}
