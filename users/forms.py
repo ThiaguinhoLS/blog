@@ -43,5 +43,15 @@ class RememberForm(FlaskForm):
 	recaptcha = RecaptchaField()
 	submit = SubmitField('Enviar')
 
-	def validate_email(self, email):
-		pass
+
+class ChangePasswordForm(FlaskForm):
+
+    'Formulário de alteração da senha'
+
+    password = PasswordField(
+        'Senha', validators=[DataRequired(), Length(min=8, max=20)]
+    )
+    confirm_password = PasswordField(
+        'Confirme a senha', validators=[DataRequired(), EqualTo('password')]
+    )
+

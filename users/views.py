@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
 
 from flask import (
-    Blueprint, render_template, redirect, url_for, flash, abort
+    Blueprint, render_template, redirect, url_for, flash, abort, current_app
 )
-from .forms import RegisterForm, LoginForm, RememberForm
+
 from app import login, db
 from flask_login import (
     current_user, login_required, logout_user, login_user
 )
-from .models import User
+from flask_mail import Message
+from .models import User, KeySecret
+from .forms import RegisterForm, LoginForm, RememberForm, ChangePasswordForm
+from app.email import send_email
 
 bp = Blueprint('users', 'users', template_folder='templates', url_prefix='/users')
 
@@ -58,6 +61,27 @@ def remember():
     'View de esqueci a senha'
 
     form = RememberForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user is not None:
+            key_secret = KeySecret(user=user)
+            db.session.add(key_secret)
+            db.session.commit()
+            send_email(
+                subject='Esqueci a senha',
+                sender=current_app.config['ADMIN'],
+                recipients=[user.email],
+                text_body=render_template(
+                    'remember_password.txt', key_secret=key_secret, user=user
+                ),
+                html_body=render_template(
+                    'remember_password.html', key_secret=key_secret, user=user
+                )
+            )
+            flash('Uma chave de segurança foi enviada ao email informado')
+            return redirect(url_for('index'))
+        else:
+            flash('Usuário inexistente', category='error')
     return render_template('remember.html', title='Esqueci a senha', form=form)
 
 
@@ -69,4 +93,19 @@ def dashboard(username):
 
     user = User.query.filter_by(username=username).first()
     return render_template('dashboard.html', title='Perfil', user=user)
+
+
+@bp.route('/change-password/<key_secret>/<username>', methods=['GET', 'POST'])
+def change_password(key_secret, username):
+    key_secret = KeySecret.query.filter_by(key_hash=key_hash).first()
+    if key_secret and key_secret.user.username == username:
+        form = ChangePasswordForm()
+        if form.validate_on_submit():
+            user = User.query.filter_by(username=username).first()
+            user.set_password(form.password.data)
+            db.session.commit()
+            flash('Senha alterada com sucesso')
+            return render_template('index')
+        return render_template('change_password.html', form=form)
+    return abort(400)
 

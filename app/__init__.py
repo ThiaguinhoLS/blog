@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 from flask_login import LoginManager
+from flask_mail import Mail
 import coverage
 import os
 import unittest
@@ -31,17 +32,11 @@ manager.add_command('db', MigrateCommand)
 login = LoginManager(app)
 login.login_view = 'login'
 
-# Testes
-
-@manager.command
-def test():
-    tests = unittest.TestLoader().discover('tests')
-    unittest.TextTestRunner(verbosity=2).run(tests)
 
 
-@manager.command
-def cov():
-    cov = coverage.Coverage()
+# Mail
+
+mail = Mail(app)
 
 # Importações
 from app import routes
